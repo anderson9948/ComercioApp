@@ -1,13 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@include file="../header.jspf" %>
 <div class="container">
-    <h2>Cidade</h2>
+    <h2>CartaoFidelidade</h2>
     
     <!--Search Form -->
-    <form action="/cidade" method="get" id="searchCidade" role="form">
+    <form action="/cartaoFidelidade" method="get" id="searchCartaoFidelidade" role="form">
         <input type="hidden" id="action" name="action" value="search">
         <div class="form-group col-xs-5">
-            <input type="text" name="search" id="search" class="form-control" required="true" placeholder="Digite a descrição da cidade a procurar"/>                    
+            <input type="text" name="search" id="search" class="form-control" required="true" placeholder="Digite a descrição da cartaoFidelidade a procurar"/>                    
         </div>
         <button type="submit" class="btn btn-info">
             <span class="glyphicon glyphicon-search"></span> Procurar
@@ -17,7 +17,7 @@
     </form>
 
     <!-- Include Botton -->
-    <form action ="/cidade?action=new" method="POST">            
+    <form action ="/cartaoFidelidade?action=new" method="POST">            
         <c:if test="${permissao.getCriar()}">
             <button type="submit" class="btn btn-primary  btn-md">Novo Cadastro</button> 
         </c:if>
@@ -30,7 +30,7 @@
             ${message}
         </div>
     </c:if> 
-    <form action="/cidade" method="post" id="cidadeForm" role="form" >              
+    <form action="/cartaoFidelidade" method="post" id="cartaoFidelidadeForm" role="form" >              
         <input type="hidden" id="id" name="id">
         <input type="hidden" id="action" name="action">
         <c:choose>
@@ -39,8 +39,12 @@
                     <thead>
                         <tr>
                             <td>#</td>
-                            <td>Nome</td>
-                            <td>Estado</td>
+                            <td>vencimento</td>
+                            <td>limite</td>
+                            <td>fatorConversao</td>
+                            <td>qtdPontos</td>
+                            <td>senha</td>
+                            <td>Pessoa</td>
                             <td></td>
                         </tr>
                     </thead>
@@ -48,19 +52,23 @@
                         <tr class="${id == obj.id?"info":""}">
                             <td>
                                 <c:if test="${permissao.getAlterar()}">
-                                    <a href="/cidade?id=${obj.id}&search=searchById">${obj.id}</a>
+                                    <a href="/cartaoFidelidade?id=${obj.id}&search=searchById">${obj.id}</a>
                                 </c:if>
                                 <c:if test="${!permissao.getAlterar()}">
                                     ${obj.id}
                                 </c:if>
                             </td>                                    
-                            <td>${obj.nome}</td>
-                            <td>${obj.estado}</td>
+                            <td>${obj.vencimento}</td>
+                            <td>${obj.limite}</td>
+                            <td>${obj.fatorConversao}</td>
+                            <td>${obj.qtdPontos}</td>
+                            <td>${obj.senha}</td>
+                            <td>${obj.pessoa}</td>
                             <td> <td>
                                 <c:if test="${permissao.getExcluir()}">
                                     <a href="#" id="remove" 
                                        onclick="document.getElementById('action').value = 'remove';document.getElementById('id').value = '${obj.id}';
-                                               document.getElementById('cidadeForm').submit();"> 
+                                               document.getElementById('cartaoFidelidadeForm').submit();"> 
                                         <span class="glyphicon glyphicon-trash"/>
                                     </a>
                                 </c:if>
