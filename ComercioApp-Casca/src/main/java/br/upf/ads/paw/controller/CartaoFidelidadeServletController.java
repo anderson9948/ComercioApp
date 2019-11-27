@@ -7,6 +7,7 @@ import br.upf.ads.paw.entidades.Movimento;
 import br.upf.ads.paw.entidades.Permissao;
 import br.upf.ads.paw.entidades.Pessoa;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,7 +90,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             Logger.getLogger(CartaoFidelidadeServletController.class.getName()).log(Level.SEVERE, null, ex);
         }
         req.setAttribute("obj", obj);
-        req.setAttribute("listPessoa", daoPessoa.findEntities());
+        req.setAttribute("listCliente", daoPessoa.findEntities());
         req.setAttribute("action", "edit");
         String nextJSP = "/jsp/form-cartaoFidelidade.jsp";
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
@@ -98,7 +99,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
 
     private void search(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String search = req.getParameter("search");
-        List<CartaoFidelidade> result = daoCartaoFidelidade.findEntitiesByField("nome", search);  // buscar por nome
+        List<CartaoFidelidade> result = daoCartaoFidelidade.findEntitiesByField("nome", search); 
         forwardList(req, resp, result);
     }
 
@@ -147,7 +148,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             throws ServletException, IOException {
         String nextJSP = "/jsp/form-cartaoFidelidade.jsp";
         List<Pessoa> list = daoPessoa.findEntities();
-        req.setAttribute("listPessoa", list);
+        req.setAttribute("listCliente", list);
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(nextJSP);
         dispatcher.forward(req, resp);
     }
@@ -156,17 +157,17 @@ public class CartaoFidelidadeServletController extends HttpServlet {
         try {
             long idCliente = Long.parseLong(req.getParameter("cliente"));
             Integer vencimento = Integer.parseInt(req.getParameter("vencimento"));
-            Double limite = Double.parseDouble(req.getParameter("limite"));
+            Double limite = Double.parseDouble(req.getParameter("vencimento"));
             Double qtdPontos = Double.parseDouble(req.getParameter("qtdPontos"));
             Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
             Integer senha = Integer.parseInt(req.getParameter("senha"));
             List<Movimento> movimentos = null;
 
-            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, qtdPontos, fatorConversao, senha, daoPessoa.findEntity(idCliente), movimentos);
+            CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, qtdPontos, fatorConversao, senha, daoPessoa.findEntity(idCliente), new ArrayList<>());
             daoCartaoFidelidade.create(obj);
             long id = obj.getId();
             req.setAttribute("id", id);
-            String message = "Um novo registro foi criado com sucesso.";
+            String message = "Um novo cartao foi criado com sucesso.";
             req.setAttribute("message", message);
             doGet(req, resp);
         } catch (Exception ex) {
@@ -175,16 +176,16 @@ public class CartaoFidelidadeServletController extends HttpServlet {
     }
 
     private void editAction(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        long id = Integer.valueOf(req.getParameter("id"));
         long idCliente = Long.parseLong(req.getParameter("cliente"));
         Integer vencimento = Integer.parseInt(req.getParameter("vencimento"));
-        Double limite = Double.parseDouble(req.getParameter("limite"));
+        Double limite = Double.parseDouble(req.getParameter("vencimento"));
         Double qtdPontos = Double.parseDouble(req.getParameter("qtdPontos"));
         Double fatorConversao = Double.parseDouble(req.getParameter("fatorConversao"));
         Integer senha = Integer.parseInt(req.getParameter("senha"));
         List<Movimento> movimentos = null;
 
-        CartaoFidelidade obj = new CartaoFidelidade(null, vencimento, limite, qtdPontos, fatorConversao, senha, daoPessoa.findEntity(idCliente), movimentos);
-
+        CartaoFidelidade obj = new CartaoFidelidade(id, vencimento, limite, qtdPontos, fatorConversao, senha, daoPessoa.findEntity(idCliente), new ArrayList<>());
         boolean success = false;
         try {
             daoCartaoFidelidade.edit(obj);
@@ -194,7 +195,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
         }
         String message = null;
         if (success) {
-            message = "O registro foi atualizado com sucesso";
+            message = "O cartao foi atualizado com sucesso";
         }
         req.setAttribute("id", obj.getId());
         req.setAttribute("message", message);
@@ -214,7 +215,7 @@ public class CartaoFidelidadeServletController extends HttpServlet {
             Logger.getLogger(CartaoFidelidadeServletController.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (confirm) {
-            String message = "O registro foi removido com sucesso.";
+            String message = "O cartao foi removido com sucesso.";
             req.setAttribute("message", message);
         }
         doGet(req, resp);
